@@ -27,7 +27,7 @@ const authenticatedUser = (username, password) => {
   }
 }
 
-//only registered users can login
+// //only registered users can login
 regd_users.post("/login", (req, res) => {
   const username = req.body.username
   const password = req.body.password
@@ -59,25 +59,21 @@ regd_users.post("/login", (req, res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  const username = req.session.username
   const isbn = req.params.isbn
-  const review = req.query.review
-  console.log(username)
-  if (!review) {
-    return res.status(400).json({ message: "Please provide a review" })
+  let filtered_book = books[isbn]
+  if (filtered_book) {
+    let review = req.query.review
+    let reviewer = req.session.authorization["username"]
+    if (review) {
+      filtered_book["reviews"][reviewer] = review
+      books[isbn] = filtered_book
+    }
+    res.send(
+      `The review for the book with ISBN  ${isbn} has been added/updated.`
+    )
+  } else {
+    res.send("Unable to find this ISBN!")
   }
-  if (!books[isbn]) {
-    return res.status(404).json({ message: "Book not found" })
-  }
-  if (!books[isbn].reviews) {
-    books[isbn].reviews = {}
-  }
-  if (books[isbn].reviews[username]) {
-    books[isbn].reviews[username] = review
-    return res.json({ message: "Review modified successfully" })
-  }
-  books[isbn].reviews[username] = review
-  return res.json({ message: "Review added successfully" })
 })
 
 // Delete a book review
