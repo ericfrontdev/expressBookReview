@@ -91,7 +91,7 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
       `Reviews for the ISBN  ${isbn} posted by the user ${reviewer} deleted.`
     )
   } else {
-    res.send(`Can't delete, as this review has been posted by ${reviewer}`)
+    res.send(`Can't delete, as this review has been posted by another user`)
   }
 })
 
