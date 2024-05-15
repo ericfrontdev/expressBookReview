@@ -27,6 +27,21 @@ public_users.get("/", function (req, res) {
   res.send(JSON.stringify(books, null, 4))
 })
 
+//Get the book list using Promises with Axios
+public_users.get("/api/booksPromise/", function (req, res) {
+  axios
+    .get("http://localhost:3000")
+    .then(function (response) {
+      return res.status(200).json(response.data)
+    })
+    .catch(function (error) {
+      console.log(error)
+      return res
+        .status(500)
+        .json({ message: "There was a error fetching the book list." })
+    })
+})
+
 // Get book details based on ISBN
 public_users.get("/isbn/:isbn", function (req, res) {
   const isbn = req.params.isbn
